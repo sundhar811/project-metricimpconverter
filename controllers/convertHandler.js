@@ -17,24 +17,32 @@ function ConvertHandler() {
   }
   
   this.getNum = function(input) {
-    // Supported input format
+    // Handled input format
     // 1. [number]
     // 2. [number].[number]
     // 3. [number].[fraction] - both proper and improper fractions are supported
     // 4. [fraction] - both proper and improper fractions are supported
     // 5. No numerical input
+    // 6. [fraction].[number/fraction]
     
     let [firstChar] = input.match(/[a-zA-Z]/);
     let firstCharIndex = input.indexOf(firstChar);
     let result = input.slice(0, firstCharIndex);
     
-    //If no input is supplied then default value '1' is returned
+    // No numerical input case -  default value '1' is returned
     if (!result) return 1;
     
+    // [number].[number] case
     if (result.indexOf('.') !== -1) {
       let dotCharIndex = result.indexOf('.');
       let integerPart = result.slice(0, dotCharIndex);
+      
+      // [fraction].[number/fraction] case
+      if (integerPart.indexOf('/') !== -1) return false;
+      
       let fractionPart = result.slice(dotCharIndex+1);
+      
+      // [number].[fraction] case
       if (fractionPart.indexOf('/') !== -1) {
         let provisionalResult = this.convertFraction(fractionPart);
         if (!isNaN(provisionalResult)) {
@@ -46,6 +54,7 @@ function ConvertHandler() {
       result = `${integerPart}.${fractionPart}`;
     }
     
+    // [fraction] case
     if (result.indexOf('/') !== -1) {
       result = this.convertFraction(result);
     }
