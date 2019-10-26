@@ -7,7 +7,7 @@
 */
 
 function ConvertHandler() {
-  this.supportedUnits = new Set(['gal', 'L', 'lbs', 'kg', 'mi', 'km']);
+  this.supportedUnits = new Set(['gal','l','mi','km','lbs','kg','GAL','L','MI','KM','LBS','KG']);
   
   this.convertFraction = function(fraction) {
     let fractionIndex = fraction.indexOf('/');
@@ -54,21 +54,47 @@ function ConvertHandler() {
   };
   
   this.getUnit = function(input) {
-    let [firstChar] = input.match(/\D/);
+    let [firstChar] = input.match(/[a-zA-Z]/);
     let firstCharIndex = input.indexOf(firstChar);
     let result = input.slice(firstCharIndex);
-    return this.supportedUnits.has(result) ? result : false;
+    return this.supportedUnits.has(result) ? result.toLowerCase() : false;
   };
   
   this.getReturnUnit = function(initUnit) {
-    var result;
-    
+    let result;
+    switch(initUnit) {
+      case 'gal':
+        return 'l';
+      case 'l':
+        return 'gal';
+      case 'lbs':
+        return 'kg';
+      case 'kg':
+        return 'lbs';
+      case 'mi':
+        return 'km';
+      case 'km':
+        return 'mi';
+    }
     return result;
   };
 
   this.spellOutUnit = function(unit) {
-    var result;
-    
+    let result;
+    switch(unit) {
+      case 'gal':
+        return 'gallons';
+      case 'l':
+        return 'litres';
+      case 'lbs':
+        return 'pounds';
+      case 'kg':
+        return 'kilograms';
+      case 'mi':
+        return 'miles';
+      case 'km':
+        return 'kilometers';
+    }
     return result;
   };
   
@@ -77,16 +103,25 @@ function ConvertHandler() {
     const lbsToKg = 0.453592;
     const miToKm = 1.60934;
     let result;
-    // switch(initUnit) {
-    //     case 
-    // }
+    switch(initUnit) {
+      case 'gal':
+        return (initNum*galToL).toFixed(5);
+      case 'l':
+        return (initNum/galToL).toFixed(5);
+      case 'lbs':
+        return (initNum*lbsToKg).toFixed(5);
+      case 'kg':
+        return (initNum/lbsToKg).toFixed(5);
+      case 'mi':
+        return (initNum*miToKm).toFixed(5);
+      case 'km':
+        return (initNum/miToKm).toFixed(5);
+    }
     return result;
   };
   
   this.getString = function(initNum, initUnit, returnNum, returnUnit) {
-    var result;
-    
-    return result;
+    return `${initNum} ${this.spellOutUnit(initUnit)} converts to ${returnNum} ${this.spellOutUnit(returnUnit)}`;
   };
   
 }
